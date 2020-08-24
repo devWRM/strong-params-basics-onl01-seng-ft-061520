@@ -12,23 +12,36 @@ class PostsController < ApplicationController
 	end
 
 	def create
-	#   CHANGED FROM: @post = Post.new(params["post"])
-		@post = Post.new(params.require(:post).permit(:title, :description))
-
-	  @post.save
-	  redirect_to post_path(@post)
+		@post = Post.new(post_params(:title, :description))
+		@post.save
+		redirect_to post_path(@post)
 	end
-
+	   
 	def update
-	  @post = Post.find(params[:id])
-	  
-	#   CHANGED FROM: @post.update(params["post"])
-		@post.update(params.require(:post).permit(:title))
+		@post = Post.find(params[:id])
 
-	  redirect_to post_path(@post)
+		# NOTE Only the title can be changed
+		@post.update(post_params(:title))
+		redirect_to post_path(@post)
 	end
 
 	def edit
 	  @post = Post.find(params[:id])
 	end
+
+
+	private
+
+	def post_params(*args)
+		params.require(:post).permit(*args)
+	end
+ 
+	# 
+	# def post_params
+	#   params.require(:post).permit(:title, :description)
+	# end
+
+
+
+
 end
